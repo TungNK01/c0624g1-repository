@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>List Province</title>
+</head>
+<body>
+<h3>Provinces</h3>
+<table id = "customers">
+    <thead>
+    <tr>
+        <th>STT</th>
+        <th>Name</th>
+        <th>Update</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p, pStatus : ${provinces}">
+        <td th:text="${pStatus.count}"></td>
+        <td><a th:href="@{/provinces/view-province/{id}(id=${p.getId()})}" th:text="${p.getName()}"></a></td>
+        <td><a th:href="@{/provinces/update/{id}(id=${p.getId()})}">update</a></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
