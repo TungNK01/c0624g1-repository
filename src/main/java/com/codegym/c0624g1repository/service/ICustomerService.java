@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ICustomerService extends IGeneralService<Customer>{
     List<Customer> findTop3ByFirstName(String firstName);
+
+    List<Customer> findCustomerByLastName(String _lastName);
 }

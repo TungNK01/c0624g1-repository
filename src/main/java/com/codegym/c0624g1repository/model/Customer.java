@@ -1,6 +1,9 @@
 package com.codegym.c0624g1repository.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "customer")
@@ -9,7 +12,11 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "Khong duoc de trong")
+    @Size(min = 2, max = 30, message = "nho nhat 2 ky tu, lon nhat 30 ky tu")
     private String firstName;
+
+    @Pattern(regexp="^[a-zA-Z0-9]{3}",message="length must be 3")
     private String lastName;
 
     @ManyToOne

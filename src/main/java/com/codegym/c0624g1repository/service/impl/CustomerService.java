@@ -39,4 +39,9 @@ public class CustomerService implements ICustomerService {
     public List<Customer> findTop3ByFirstName(String firstName) {
         return iCustomerRepository.findTop3ByFirstName(firstName);
     }
+
+    @Override
+    public List<Customer> findCustomerByLastName(String _lastName) {
+        return iCustomerRepository.findCustomerByLastName(_lastName);
+    }
 }

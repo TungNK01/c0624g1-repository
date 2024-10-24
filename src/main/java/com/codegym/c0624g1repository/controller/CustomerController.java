@@ -7,6 +7,7 @@ import com.codegym.c0624g1repository.service.IProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -45,10 +46,13 @@ public class CustomerController {
     }
 
     @PostMapping("/save")
-    public ModelAndView saveCustomer(@ModelAttribute Customer customer, BindingResult bindingResult) {
-        if (!bindingResult.hasErrors()) {
-            customerService.save(customer);
+    public ModelAndView saveCustomer(@Validated @ModelAttribute Customer customer, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            ModelAndView modelAndView = new ModelAndView("/customer/create");
+            return modelAndView;
         }
+        customerService.save(customer);
+
         ModelAndView modelAndView = new ModelAndView("/customer/create");
         modelAndView.addObject("customer", new Customer());
         return modelAndView;
@@ -57,6 +61,12 @@ public class CustomerController {
     @GetMapping("/{firstName}")
     public String showCustomer(@PathVariable String firstName) {
         List<Customer> customers = customerService.findTop3ByFirstName(firstName);
+        return "";
+    }
+
+    @GetMapping("/store/{_lastName}")
+    public String showCustomerStore(@PathVariable String _lastName) {
+        List<Customer> customers = customerService.findCustomerByLastName(_lastName);
         return "";
     }
 }

@@ -12,10 +12,12 @@
     <div>
       <label for="firstname">FirstName</label>
       <input type="text" id="firstname" th:field="*{firstName}"/>
+      <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Name Error</p>
     </div>
     <div>
       <label for="lastname">LastName</label>
       <input type="text" id="lastname" th:field="*{lastName}"/>
+      <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Name Error</p>
     </div>
     <div>
       <label for="province">Province</label>
