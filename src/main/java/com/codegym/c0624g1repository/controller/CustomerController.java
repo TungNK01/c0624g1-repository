@@ -6,16 +6,20 @@ import com.codegym.c0624g1repository.service.ICustomerService;
 import com.codegym.c0624g1repository.service.IProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
+@SessionAttributes("counter")
 @RequestMapping("/customers")
 public class CustomerController {
     @Autowired
@@ -33,9 +37,13 @@ public class CustomerController {
     @GetMapping("")
     public ModelAndView listCustomer() {
         ModelAndView modelAndView = new ModelAndView("/customer/list");
-        Iterable<Customer> customers = customerService.findAll();
-        modelAndView.addObject("customers", customers);
-        return modelAndView;
+        try {
+            Iterable<Customer> customers = customerService.findAllCustomer();
+            modelAndView.addObject("customers", customers);
+            return modelAndView;
+        }catch (Exception e) {
+            return null;
+        }
     }
 
     @GetMapping("/create")
@@ -67,6 +75,20 @@ public class CustomerController {
     @GetMapping("/store/{_lastName}")
     public String showCustomerStore(@PathVariable String _lastName) {
         List<Customer> customers = customerService.findCustomerByLastName(_lastName);
+        return "";
+    }
+
+    @ModelAttribute("userName")
+    public String login(HttpServletRequest request, Model model) {
+        // get all cookies
+        Cookie[] cookies = request.getCookies();
+        // iterate each cookie
+        for (Cookie ck : cookies) {
+            // display only the cookie with the name 'setUser'
+            if (ck.getName().equals("usernameCookie")) {
+                return ck.getValue();
+            }
+        }
         return "";
     }
 }

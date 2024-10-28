@@ -16,7 +16,7 @@ public class CustomerService implements ICustomerService {
     private ICustomerRepository iCustomerRepository;
 
     @Override
-    public Iterable<Customer> findAll() {
+    public Iterable<Customer> findAll(){
         return iCustomerRepository.findAll();
     }
 
@@ -26,8 +26,9 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public Optional<Customer> findById(Long id) {
-        return iCustomerRepository.findById(id);
+    public Optional<Customer> findById(Long id){
+        Optional<Customer> customerOptional = iCustomerRepository.findById(id);
+        return customerOptional;
     }
 
     @Override
@@ -43,5 +44,19 @@ public class CustomerService implements ICustomerService {
     @Override
     public List<Customer> findCustomerByLastName(String _lastName) {
         return iCustomerRepository.findCustomerByLastName(_lastName);
+    }
+
+    @Override
+    public Iterable<Customer> findAllCustomer(){
+        return  iCustomerRepository.findAll();
+    }
+
+    @Override
+    public Optional<Customer> findCustomerById(Long id) throws Exception {
+        Optional<Customer> customerOptional = iCustomerRepository.findById(id);
+        if (!customerOptional.isPresent()) {
+            throw new Exception("customer not found!");
+        }
+        return customerOptional;
     }
 }
