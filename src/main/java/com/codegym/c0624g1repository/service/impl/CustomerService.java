@@ -1,11 +1,15 @@
 package com.codegym.c0624g1repository.service.impl;
 
+import com.codegym.c0624g1repository.exception.DuplicateEmailException;
 import com.codegym.c0624g1repository.model.Customer;
 import com.codegym.c0624g1repository.repository.ICustomerRepository;
 import com.codegym.c0624g1repository.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,8 +59,18 @@ public class CustomerService implements ICustomerService {
     public Optional<Customer> findCustomerById(Long id) throws Exception {
         Optional<Customer> customerOptional = iCustomerRepository.findById(id);
         if (!customerOptional.isPresent()) {
-            throw new Exception("customer not found!");
+            throw new Exception(" customer not found!");
         }
         return customerOptional;
+    }
+
+    @Override
+    public void saveCustomer(Customer customer) throws DuplicateEmailException {
+        try {
+            iCustomerRepository.save(customer);
+        } catch (Exception e) {
+            throw new DuplicateEmailException();
+        }
+        //iCustomerRepository.save(customer);
     }
 }

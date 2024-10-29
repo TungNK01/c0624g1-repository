@@ -19,6 +19,17 @@ public class Customer {
     @Pattern(regexp="^[a-zA-Z0-9]{3}",message="length must be 3")
     private String lastName;
 
+    @Column(unique = true)
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @ManyToOne
     @JoinColumn(name = "province_id")
     private Province province;

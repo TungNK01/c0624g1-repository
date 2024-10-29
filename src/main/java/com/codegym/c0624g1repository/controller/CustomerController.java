@@ -1,5 +1,6 @@
 package com.codegym.c0624g1repository.controller;
 
+import com.codegym.c0624g1repository.exception.DuplicateEmailException;
 import com.codegym.c0624g1repository.model.Customer;
 import com.codegym.c0624g1repository.model.Province;
 import com.codegym.c0624g1repository.service.ICustomerService;
@@ -11,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -53,17 +53,24 @@ public class CustomerController {
         return modelAndView;
     }
 
-    @PostMapping("/save")
-    public ModelAndView saveCustomer(@Validated @ModelAttribute Customer customer, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            ModelAndView modelAndView = new ModelAndView("/customer/create");
-            return modelAndView;
-        }
-        customerService.save(customer);
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ModelAndView showInputNotAcceptable() {
+        return new ModelAndView("/customer/inputs-not-acceptable");
+    }
 
-        ModelAndView modelAndView = new ModelAndView("/customer/create");
-        modelAndView.addObject("customer", new Customer());
-        return modelAndView;
+    @PostMapping("/save")
+    public ModelAndView saveCustomer(@Validated @ModelAttribute Customer customer, BindingResult bindingResult) throws DuplicateEmailException {
+
+            if (bindingResult.hasFieldErrors()) {
+                ModelAndView modelAndView = new ModelAndView("/customer/create");
+                return modelAndView;
+            }
+            //customerService.save(customer);
+            customerService.saveCustomer(customer);
+
+            ModelAndView modelAndView = new ModelAndView("/customer/create");
+            modelAndView.addObject("customer", new Customer());
+            return modelAndView;
     }
 
     @GetMapping("/{firstName}")
@@ -90,5 +97,17 @@ public class CustomerController {
             }
         }
         return "";
+    }
+
+    @GetMapping("/find/{id}")
+    public ModelAndView showInformation(@PathVariable Long id) {
+        try {
+            ModelAndView modelAndView = new ModelAndView("/customer/info");
+            Optional<Customer> customerOptional = customerService.findCustomerById(id);
+            modelAndView.addObject("customer", customerOptional.get());
+            return modelAndView;
+        } catch (Exception e) {
+            return new ModelAndView("redirect:/customers");
+        }
     }
 }
